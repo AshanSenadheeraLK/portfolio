@@ -3,12 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome - Language Selection</title>
+    <title>HM Ashan Janith Dilshan Senadheera | Multilingual Portfolio - Choose Your Language</title>
+    <meta name="description" content="Select your preferred language (සිංහල, தமிழ், English) to explore HM Ashan Janith Dilshan Senadheera's portfolio showcasing software engineering and full-stack development expertise.">
+    <meta name="keywords" content="Ashan Senadheera, Portfolio, Sinhala, Tamil, English, Full Stack Developer, Software Engineer, Sri Lanka">
+    <meta name="author" content="HM Ashan Janith Dilshan Senadheera">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ashansenadheeralk.netlify.app/web/">
+    <meta property="og:title" content="HM Ashan Janith Dilshan Senadheera | Multilingual Portfolio">
+    <meta property="og:description" content="Choose your preferred language to explore an innovative portfolio showcasing software development expertise in Sinhala, Tamil, and English.">
+    <meta property="og:image" content="https://ashansenadheeralk.netlify.app/assets/img/img.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ashansenadheeralk.netlify.app/web/">
+    <meta property="twitter:title" content="HM Ashan Janith Dilshan Senadheera | Multilingual Portfolio">
+    <meta property="twitter:description" content="Choose your preferred language to explore an innovative portfolio showcasing software development expertise in Sinhala, Tamil, and English.">
+    <meta property="twitter:image" content="https://ashansenadheeralk.netlify.app/assets/img/img.jpg">
+
+    <!-- Language Alternates -->
+    <link rel="alternate" hreflang="en" href="https://ashansenadheeralk.netlify.app/web/en/">
+    <link rel="alternate" hreflang="si" href="https://ashansenadheeralk.netlify.app/web/si/">
+    <link rel="alternate" hreflang="ta" href="https://ashansenadheeralk.netlify.app/web/ta/">
+    <link rel="alternate" hreflang="x-default" href="https://ashansenadheeralk.netlify.app/web/">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://ashansenadheeralk.netlify.app/web/">
+    
+    <!-- Robots -->
+    <meta name="robots" content="index, follow">
+    
+    <!-- Additional Meta -->
+    <meta name="theme-color" content="#0a0a1f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpg" href="https://ashansenadheeralk.netlify.app/assets/img/img.jpg">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Sinhala:wght@100..900&display=swap');
         
         :root {
             --neon-blue: #4361ee;
@@ -18,7 +56,7 @@
         }
         
         body {
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Noto Serif Sinhala', serif;
             background-color: var(--dark-bg);
             color: #e2e8f0;
             margin: 0;
@@ -49,7 +87,10 @@
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 1rem;
-            max-width: 90vw;
+            width: 90vw; /* Changed max-width to width for full responsiveness */
+            max-width: 500px; /* Added max-width for larger screens */
+            padding: 2rem; /* Added padding for better spacing */
+            margin: auto;
         }
         
         .neon-text {
@@ -57,10 +98,12 @@
         }
         
         .globe {
-            width: 150px;
-            height: 150px;
+            width: 30vw; /* Responsive width */
+            height: auto; /* Maintain aspect ratio */
+            max-width: 150px; /* Limit max size */
             position: relative;
             margin: 0 auto 30px;
+            
         }
         
         .language-btn {
@@ -134,8 +177,8 @@
             }
             
             .globe {
-                width: 120px;
-                height: 120px;
+                width: 80px; /* Adjusted for smaller screens */
+                height: auto; /* Maintain aspect ratio */
                 margin-bottom: 20px;
             }
             
@@ -145,12 +188,6 @@
             
             .welcome-slider h1 {
                 font-size: 1.5rem;
-            }
-        }
-        
-        @media (min-width: 1024px) {
-            .container {
-                max-width: 500px;
             }
         }
         
@@ -169,7 +206,7 @@
     
     <div class="fullscreen-container">
         <div class="container px-4 py-6 relative z-10">
-            <div class="glass p-6 md:p-8 rounded-2xl shadow-2xl text-center">
+            <div class="glass rounded-2xl shadow-2xl text-center">
                 <div class="globe" id="globe-container">
                     <!-- 3D globe will be rendered here -->
                 </div>
@@ -201,8 +238,11 @@
                     </button>
                 </div>
                 
-                <div class="mt-6 md:mt-8 text-blue-200 text-xs md:text-sm">
+                <div class="mt-8 text-blue-200 text-sm hidden md:block">
                     &copy; 2025 - <script>document.write(new Date().getFullYear());</script> - HM Ashan Janith Dilshan Senadheera
+                </div>
+                <div class="block md:hidden text-blue-200 text-xs mt-6">
+                    &copy; 2025 - <script>document.write(new Date().getFullYear());</script><br/>HM Ashan Janith Dilshan Senadheera
                 </div>
             </div>
         </div>
