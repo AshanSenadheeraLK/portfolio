@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HM Ashan Janith Dilshan Senadheera | 3D Portfolio</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <!-- Font Awesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap");
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Sinhala:wght@100..900&display=swap');
+
+      :root {
+        --neon-blue: #4361ee;
+        --neon-purple: #7209b7;
+        --neon-pink: #f72585;
+        --dark-bg: #0a0a1f;
+      }
+
+      body {
+        font-family: "Noto Serif Sinhala", serif;
+        background-color: var(--dark-bg);
+        color: #e2e8f0;
+        overflow-x: hidden;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: "Orbitron", sans-serif;
+      }
+
+      #canvas-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+      }
+
+      .glass {
+        background: rgba(10, 10, 31, 0.25);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1rem;
+      }
+
+      .neon-text {
+        text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue),
+          0 0 30px var(--neon-blue);
+      }
+
+      .neon-box {
+        box-shadow: 0 0 10px var(--neon-blue), 0 0 20px rgba(67, 97, 238, 0.5);
+      }
+
+      .neon-border {
+        border: 2px solid var(--neon-blue);
+        box-shadow: 0 0 10px var(--neon-blue), inset 0 0 10px var(--neon-blue);
+      }
+
+      .project-card {
+        transition: all 0.5s ease;
+        perspective: 1000px;
+      }
+
+      .project-card:hover {
+        transform: translateY(-10px) scale(1.02);
+      }
+
+      .skill-icon {
+        transition: all 0.3s ease;
+      }
+
+      .skill-icon:hover {
+        transform: scale(1.1) rotate(5deg);
+      }
+
+      .floating {
+        animation: float 6s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .typewriter {
+        overflow: hidden;
+        border-right: 3px solid var(--neon-blue);
+        white-space: nowrap;
+        animation: typing 3.5s steps(40, end),
+          blink-caret 0.75s step-end infinite;
+      }
+
+      @keyframes typing {
+        from {
+          width: 0;
+        }
+        to {
+          width: 100%;
+        }
+      }
+
+      @keyframes blink-caret {
+        from,
+        to {
+          border-color: transparent;
+        }
+        50% {
+          border-color: var(--neon-blue);
+        }
+      }
+
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(10, 10, 31, 0.5);
+      }
+
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: var(--neon-blue);
+        border-radius: 10px;
+      }
+
+      .opacity-0 {
+        opacity: 0;
+      }
+
+      .animate-fade-in {
+        animation: fadeIn 1s forwards;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .grid-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+      }
+
+      /* Navigation Styles */
+      .nav-link {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(to right, var(--neon-blue), var(--neon-purple));
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+
+      .nav-link:hover::after {
+        transform: translateX(0);
+      }
+
+      .language-switcher {
+        position: relative;
+        cursor: pointer;
+      }
+
+      .language-options {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: rgba(10, 10, 31, 0.95);
+        border: 1px solid var(--neon-blue);
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        min-width: 120px;
+      }
+
+      .language-switcher:hover .language-options {
+        display: block;
+      }
+
+      /* Mobile menu styles */
+      .mobile-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 80%;
+        max-width: 300px;
+        height: 100vh;
+        background: rgba(10, 10, 31, 0.95);
+        z-index: 100;
+        transition: right 0.3s ease;
+        border-left: 1px solid rgba(67, 97, 238, 0.3);
+        padding: 2rem;
+        overflow-y: auto;
+      }
+
+      .mobile-menu.active {
+        right: 0;
+      }
+
+      .mobile-menu-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 99;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease;
+      }
+
+      .mobile-menu-overlay.active {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      /* Responsive styles */
+      @media (max-width: 768px) {
+        .typewriter {
+          white-space: normal;
+          border-right: none;
+          animation: none;
+        }
+
+        h1 {
+          font-size: 2.5rem !important;
+        }
+
+        .youtube-container {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .youtube-container iframe {
+          width: 100%;
+          max-width: 560px;
+          margin-bottom: 1rem;
+        }
+      }
+
+      @media (max-width: 1024px) {
+        .youtube-container {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+
+        .youtube-container iframe {
+          margin-bottom: 1rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="custom-scrollbar">
+    <!-- Three.js Canvas Container -->
+    <div id="canvas-container"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="fixed top-0 left-0 w-full z-50 glass py-4">
+      <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center">
+          <!-- Logo / Name -->
+          <div class="text-2xl font-bold neon-text">
+            <a href="#" class="flex items-center space-x-2">
+              <i class="fas fa-code"></i>
+              <span>Ashan</span>
+            </a>
+          </div>
+
+          <!-- Desktop Navigation -->
+          <div class="hidden md:flex items-center space-x-8">
+            <a href="#" class="nav-link text-white hover:text-indigo-400 transition-colors duration-300"
+              >Home</a
+            >
+            <a
+              href="#skills"
+              class="nav-link text-white hover:text-indigo-400 transition-colors duration-300"
+              >Skills</a
+            >
+            <a
+              href="#projects"
+              class="nav-link text-white hover:text-indigo-400 transition-colors duration-300"
+              >Projects</a
+            >
+            <a
+              href="#youtube"
+              class="nav-link text-white hover:text-indigo-400 transition-colors duration-300"
+              >YouTube</a
+            >
+            <a
+              href="#contact"
+              class="nav-link text-white hover:text-indigo-400 transition-colors duration-300"
+              >Contact</a
+            >
+
+            <!-- Language Switcher -->
+            <div class="language-switcher">
+              <button
+                class="flex items-center space-x-2 text-white hover:text-indigo-400 transition-colors duration-300"
+              >
+                <i class="fas fa-globe"></i>
+                <span>English</span>
+                <i class="fas fa-chevron-down text-sm"></i>
+              </button>
+              <div class="language-options">
+                <a
+                  href="/web/si/"
+                  class="block px-4 py-2 text-white hover:text-indigo-400 transition-colors duration-300"
+                  >සිංහල</a
+                >
+                <a
+                  href="/web/ta/"
+                  class="block px-4 py-2 text-white hover:text-indigo-400 transition-colors duration-300"
+                  >தமிழ்</a
+                >
+                <a
+                  href="/web/en/"
+                  class="block px-4 py-2 text-white hover:text-indigo-400 transition-colors duration-300"
+                  >English</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile Menu Button -->
+          <button
+            id="mobile-menu-button"
+            class="md:hidden text-white hover:text-indigo-400 transition-colors duration-300"
+          >
+            <i class="fas fa-bars text-2xl"></i>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="mobile-menu">
+      <div class="flex justify-end mb-8">
+        <button
+          id="close-menu-button"
+          class="text-white hover:text-indigo-400 transition-colors duration-300"
+        >
+          <i class="fas fa-times text-2xl"></i>
+        </button>
+      </div>
+      <div class="flex flex-col space-y-6">
+        <a
+          href="#"
+          class="text-xl text-white hover:text-indigo-400 transition-colors duration-300"
+          >Home</a
+        >
+        <a
+          href="#skills"
+          class="text-xl text-white hover:text-indigo-400 transition-colors duration-300"
+          >Skills</a
+        >
+        <a
+          href="#projects"
+          class="text-xl text-white hover:text-indigo-400 transition-colors duration-300"
+          >Projects</a
+        >
+        <a
+          href="#youtube"
+          class="text-xl text-white hover:text-indigo-400 transition-colors duration-300"
+          >YouTube</a
+        >
+        <a
+          href="#contact"
+          class="text-xl text-white hover:text-indigo-400 transition-colors duration-300"
+          >Contact</a
+        >
+
+        <!-- Language Section in Mobile Menu -->
+        <div class="pt-6 border-t border-indigo-900">
+          <p class="text-indigo-400 mb-4">Language</p>
+          <div class="flex flex-col space-y-4">
+            <a
+              href="/web/si/"
+              class="text-white hover:text-indigo-400 transition-colors duration-300"
+              >සිංහල</a
+            >
+            <a
+              href="/web/ta/"
+              class="text-white hover:text-indigo-400 transition-colors duration-300"
+              >தமிழ்</a
+            >
+            <a
+              href="/web/en/"
+              class="text-white hover:text-indigo-400 transition-colors duration-300"
+              >English</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="relative z-10 pt-20">
+      <div class="container mx-auto px-4">
+        <!-- Header / Hero Section -->
+        <header class="text-center py-16 mb-12">
+          <h1
+            class="text-4xl md:text-6xl font-bold mb-6 neon-text bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
+          >
+            HM Ashan Janith Dilshan Senadheera
+          </h1>
+          <div class="max-w-2xl mx-auto overflow-hidden mb-8">
+            <p class="text-xl text-purple-500 typewriter">
+              Trainee Software Engineer exploring the digital frontier.
+            </p>
+          </div>
+          <div class="flex flex-wrap justify-center mt-8 gap-4">
+            <a
+              href="/web/assets/pdf/ASLKResume.pdf"
+              target="_blank"
+              download
+              class="group relative px-8 py-3 overflow-hidden rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium transition duration-300 hover:shadow-lg hover:shadow-indigo-500/50"
+            >
+              <span
+                class="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-indigo-700 to-purple-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              ></span>
+              <span class="relative flex items-center">
+                <i class="fas fa-file-alt mr-2"></i> View Resume
+              </span>
+            </a>
+            <a
+              href="mailto:contact@ashansenadheera.lk"
+              target="_blank"
+              class="group relative px-8 py-3 overflow-hidden rounded-full neon-border text-white font-medium transition duration-300"
+            >
+              <span
+                class="absolute top-0 left-0 w-full h-full bg-indigo-800 opacity-0 group-hover:opacity-20 transition-opacity duration-300"
+              ></span>
+              <span class="relative flex items-center">
+                <i class="fas fa-envelope mr-2"></i> Contact Me
+              </span>
+            </a>
+          </div>
+        </header>
+
+        <!-- Skills Section -->
+        <section id="skills" class="mb-24">
+          <div class="text-center mb-12">
+            <h2
+              class="text-4xl font-bold mb-3 inline-block bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-500"
+            >
+              Tech Skills
+            </h2>
+            <div
+              class="h-1 w-24 bg-gradient-to-r from-indigo-500 to-purple-500 mx-auto rounded-full"
+            ></div>
+          </div>
+          <div
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-center"
+          >
+            <div class="glass p-6 rounded-xl neon-box skill-icon">
+              <div class="text-indigo-400 text-5xl mb-4 floating">
+                <i class="fas fa-code"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-2">Frontend</h3>
+              <p class="text-gray-300">
+                HTML, CSS, Tailwind CSS, Bootstrap, JavaScript, jQuery, AJAX,
+                TypeScript, React, NextJS, Angular
+              </p>
+            </div>
+            <div class="glass p-6 rounded-xl neon-box skill-icon">
+              <div
+                class="text-purple-400 text-5xl mb-4 floating"
+                style="animation-delay: 0.5s"
+              >
+                <i class="fas fa-database"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-2">Backend</h3>
+              <p class="text-gray-300">
+                Node.js, Express.js, Python, MySQLite, Firebase
+              </p>
+            </div>
+            <div class="glass p-6 rounded-xl neon-box skill-icon">
+              <div
+                class="text-pink-400 text-5xl mb-4 floating"
+                style="animation-delay: 1s"
+              >
+                <i class="fas fa-cubes"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-2">3D Design</h3>
+              <p class="text-gray-300">Three.js</p>
+            </div>
+            <div class="glass p-6 rounded-xl neon-box skill-icon">
+              <div
+                class="text-indigo-400 text-5xl mb-4 floating"
+                style="animation-delay: 1.5s"
+              >
+                <i class="fas fa-mobile-alt"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-2">Mobile</h3>
+              <p class="text-gray-300">Flutter, Dart</p>
+            </div>
+            <div class="glass p-6 rounded-xl neon-box skill-icon">
+              <div
+                class="text-indigo-400 text-5xl mb-4 floating"
+                style="animation-delay: 1.5s"
+              >
+                <i class="fas fa-cogs"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-2">
+                Content Management Systems
+              </h3>
+              <p class="text-gray-300">WordPress, Enonic</p>
+            </div>
+            <div class="glass p-6 rounded-xl neon-box skill-icon">
+              <div
+                class="text-indigo-400 text-5xl mb-4 floating"
+                style="animation-delay: 1.5s"
+              >
+                <i class="fas fa-code-branch"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-2">
+                Version Control Systems
+              </h3>
+              <p class="text-gray-300">Git, GitHub, GitLab</p>
+            </div>
+            <div class="glass p-6 rounded-xl neon-box skill-icon">
+              <div
+                class="text-indigo-400 text-5xl mb-4 floating"
+                style="animation-delay: 1.5s"
+              >
+                <i class="fas fa-desktop"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-2">Operating Systems</h3>
+              <p class="text-gray-300">Windows, Android, iOS</p>
+            </div>
+            <div class="glass p-6 rounded-xl neon-box skill-icon">
+              <div
+                class="text-indigo-400 text-5xl mb-4 floating"
+                style="animation-delay: 1.5s"
+              >
+                <i class="fas fa-cloud"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-2">Cloud Services</h3>
+              <p class="text-gray-300">AWS, Azure, Google Cloud</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="mb-24">
+          <div class="text-center mb-12">
+            <h2
+              class="text-4xl font-bold mb-3 inline-block bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-500"
+            >
+              Featured Projects
+            </h2>
+            <div
+              class="h-1 w-24 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full"
+            ></div>
+          </div>
+
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            <!-- Project 1 -->
+            <div
+              class="glass rounded-xl overflow-hidden shadow-lg project-card group"
+            >
+              <div class="relative">
+                <img
+                  src="/web/assets/media/images/projects/project1.png"
+                  alt="Project 1"
+                  class="w-full h-60 object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div
+                  class="absolute top-0 right-0 bg-gradient-to-r from-indigo-600 to-blue-600 text-white px-3 py-1 m-3 rounded-full text-sm"
+                >
+                  Web App
+                </div>
+              </div>
+              <div class="p-6">
+                <h3 class="text-2xl font-semibold text-white mb-3">
+                  Weather Web App
+                </h3>
+                <p class="text-gray-300 mb-4">
+                  A responsive weather web app that displays the weather of a
+                  specific city.
+                </p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span
+                    class="bg-indigo-900 text-indigo-200 px-3 py-1 rounded-md text-xs"
+                  >
+                    HTML, CSS, JavaScript
+                  </span>
+                  <span
+                    class="bg-indigo-900 text-indigo-200 px-3 py-1 rounded-md text-xs"
+                  >
+                    Node.js
+                  </span>
+                  <span
+                    class="bg-indigo-900 text-indigo-200 px-3 py-1 rounded-md text-xs"
+                  >
+                    Express.js
+                  </span>
+                </div>
+                <a
+                  href="http://asweather.ashansenadheera.lk"
+                  target="_blank"
+                  class="inline-flex items-center text-indigo-400 hover:text-indigo-300 font-medium transition duration-300"
+                >
+                  <span>View Project</span>
+                  <i
+                    class="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition duration-300"
+                  ></i>
+                </a>
+              </div>
+            </div>
+            <!-- Project 2 -->
+            <div
+              class="glass rounded-xl overflow-hidden shadow-lg project-card group"
+            >
+              <div class="relative">
+                <img
+                  src="/web/assets/media/images/projects/web.png"
+                  alt="Project 2"
+                  class="w-full h-60 object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div
+                  class="absolute top-0 right-0 bg-gradient-to-r from-green-600 to-teal-600 text-white px-3 py-1 m-3 rounded-full text-sm"
+                >
+                  3D Model
+                </div>
+              </div>
+              <div class="p-6">
+                <h3 class="text-2xl font-semibold text-white mb-3">
+                  Interactive 3D Portfolio
+                </h3>
+                <p class="text-gray-300 mb-4">
+                  A web-based 3D environment showcasing interactive models and
+                  animations.
+                </p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span
+                    class="bg-indigo-900 text-indigo-200 px-3 py-1 rounded-md text-xs"
+                  >
+                    Three.js
+                  </span>
+                  <span
+                    class="bg-indigo-900 text-indigo-200 px-3 py-1 rounded-md text-xs"
+                  >
+                    HTML, CSS, JavaScript
+                  </span>
+                  <span
+                    class="bg-indigo-900 text-indigo-200 px-3 py-1 rounded-md text-xs"
+                  >
+                    Tailwind CSS
+                  </span>
+                </div>
+                <a
+                  href="http://ashansenadheera.lk"
+                  target="_blank"
+                  class="inline-flex items-center text-indigo-400 hover:text-indigo-300 font-medium transition duration-300"
+                >
+                  <span>View Project</span>
+                  <i
+                    class="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition duration-300"
+                  ></i>
+                </a>
+              </div>
+            </div>
+            <!-- Project 3 -->
+            <div
+              class="glass rounded-xl overflow-hidden shadow-lg project-card group"
+            >
+              <div class="relative">
+                <img
+                  src="/web/assets/media/images/projects/aichatbot.png"
+                  alt="Project 3"
+                  class="w-full h-60 object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div
+                  class="absolute top-0 right-0 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-3 py-1 m-3 rounded-full text-sm"
+                >
+                  AI Based
+                </div>
+              </div>
+              <div class="p-6">
+                <h3 class="text-2xl font-semibold text-white mb-3">
+                  AI Chatbot
+                </h3>
+                <p class="text-gray-300 mb-4">
+                  A chatbot for answering questions and providing information.
+                </p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span
+                    class="bg-indigo-900 text-indigo-200 px-3 py-1 rounded-md text-xs"
+                  >
+                    HTML, CSS, JavaScript
+                  </span>
+                  <span
+                    class="bg-indigo-900 text-indigo-200 px-3 py-1 rounded-md text-xs"
+                  >
+                    PuterJS
+                  </span>
+                  <span
+                    class="bg-indigo-900 text-indigo-200 px-3 py-1 rounded-md text-xs"
+                  >
+                    Tailwind CSS
+                  </span>
+                </div>
+                <a
+                  href="/web/assets/media/images/projects/aichatbot.png"
+                  class="inline-flex items-center text-indigo-400 hover:text-indigo-300 font-medium transition duration-300"
+                >
+                  <span>View Project</span>
+                  <i
+                    class="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition duration-300"
+                  ></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- YouTube Section -->
+        <section id="youtube" class="mb-24">
+          <div class="text-center mb-12">
+            <h2
+              class="text-4xl font-bold mb-3 inline-block bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-500"
+            >
+              YouTube Videos
+            </h2>
+            <div
+              class="h-1 w-24 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full"
+            ></div>
+          </div>
+          <div class="youtube-container flex justify-center gap-8">
+            <iframe
+              width="560"
+              height="315"
+              src="https://www.youtube.com/embed/xOOKF3JI_3E?si=1gRMJ6_55XUosmT2&amp;controls=0"
+              title="YouTube video player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen
+              class="rounded-xl shadow-lg"
+            ></iframe>
+            <iframe
+              width="560"
+              height="315"
+              src="https://www.youtube.com/embed/V_pYhDZceJk?si=N2xtzjkUadyaF_Kn&amp;controls=0"
+              title="YouTube video player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen
+              class="rounded-xl shadow-lg"
+            ></iframe>
+            <iframe
+              width="560"
+              height="315"
+              src="https://www.youtube-nocookie.com/embed/eRW3bz3wJN4?si=pLdWCXtqCO9qzirj"
+              title="YouTube video player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen
+              class="rounded-xl shadow-lg"
+            ></iframe>
+          </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="mb-24">
+          <div class="glass rounded-xl p-10 relative overflow-hidden">
+            <div
+              class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-indigo-900/50 to-purple-900/50"
+            ></div>
+            <div class="absolute top-0 left-0 w-full h-full">
+              <div class="grid-bg"></div>
+            </div>
+            <div class="relative text-center mb-8">
+              <h2 class="text-4xl font-bold mb-4 neon-text">
+                Let's Create The Future Together
+              </h2>
+              <p class="max-w-2xl mx-auto text-lg">
+                I'm currently working as a Trainee Software Engineer.
+                Let's build something amazing!
+              </p>
+            </div>
+            <div
+              class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6"
+            >
+              <a
+                href="mailto:contact@ashansenadheera.lk"
+                target="_blank"
+                class="group relative px-8 py-4 overflow-hidden rounded-xl bg-white text-indigo-900 font-medium transition duration-300 hover:shadow-lg hover:shadow-white/20"
+              >
+                <span
+                  class="absolute top-0 left-0 w-full h-full bg-indigo-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                ></span>
+                <span class="relative flex items-center justify-center">
+                  <i class="fas fa-envelope mr-2"></i> Email Me
+                </span>
+              </a>
+              <a
+                href="/web/assets/pdf/ASLKResume.pdf"
+                target="_blank"
+                class="group relative px-8 py-4 overflow-hidden rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium transition duration-300 hover:shadow-lg hover:shadow-indigo-500/50"
+              >
+                <span
+                  class="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-indigo-700 to-purple-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                ></span>
+                <span class="relative flex items-center justify-center">
+                  <i class="fas fa-file-alt mr-2"></i> View Resume
+                </span>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-indigo-900/50 pt-8 pb-6">
+          <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-6 md:mb-0 text-center md:text-left">
+              <p class="text-white font-medium">
+                © 2025 -
+                <script>
+                  document.write(new Date().getFullYear());
+                </script>
+                - HM Ashan Janith Dilshan Senadheera
+              </p>
+              <p class="text-indigo-300 text-sm">
+                Crafting digital experiences
+              </p>
+            </div>
+            <div class="flex space-x-6">
+              <a
+                href="https://github.com/ashansenadheeralk"
+                class="text-indigo-400 hover:text-white transition duration-300 text-2xl"
+                target="_blank"
+                id="github"
+              >
+                <i class="fab fa-github"></i>
+              </a>
+              <a
+                href=""
+                class="text-indigo-400 hover:text-white transition duration-300 text-2xl"
+                target="_blank"
+                id="linkedin"
+              >
+                <i class="fab fa-linkedin"></i>
+              </a>
+              <a
+                href=""
+                class="text-indigo-400 hover:text-white transition duration-300 text-2xl"
+                target="_blank"
+                id="twitter"
+              >
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a
+                href="mailto:contact@ashansenadheera.lk"
+                class="text-indigo-400 hover:text-white transition duration-300 text-2xl"
+                target="_blank"
+                id="email"
+              >
+                <i class="fas fa-envelope"></i>
+              </a>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <!-- Main Script -->
+    <script>
+      // Initialize Three.js scene
+      const initThreeJS = () => {
+        const container = document.getElementById("canvas-container");
+
+        // Create scene, camera, and renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(
+          75,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          1000
+        );
+        const renderer = new THREE.WebGLRenderer({
+          antialias: true,
+          alpha: true,
+        });
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Limit pixel ratio for performance
+        container.appendChild(renderer.domElement);
+
+        // Create particle system
+        const particleCount = Math.min(
+          1000,
+          window.innerWidth < 768 ? 500 : 1000
+        );
+        const particles = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const sizes = new Float32Array(particleCount);
+
+        for (let i = 0; i < particleCount; i++) {
+          const i3 = i * 3;
+          const radius = Math.random() * 100 + 50;
+          const theta = Math.random() * Math.PI * 2;
+          const phi = Math.acos(2 * Math.random() - 1);
+
+          positions[i3] = radius * Math.sin(phi) * Math.cos(theta);
+          positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+          positions[i3 + 2] = radius * Math.cos(phi);
+
+          sizes[i] = Math.random() * 2 + 1;
+        }
+
+        particles.setAttribute(
+          "position",
+          new THREE.BufferAttribute(positions, 3)
+        );
+        particles.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
+
+        // Create shaders for glowing particles
+        const particleMaterial = new THREE.ShaderMaterial({
+          uniforms: {
+            time: { value: 0 },
+            color1: { value: new THREE.Color(0x4361ee) }, // Neon blue
+            color2: { value: new THREE.Color(0x7209b7) }, // Neon purple
+          },
+          vertexShader: `
+            attribute float size;
+            uniform float time;
+            varying vec3 vPosition;
+            
+            void main() {
+                vPosition = position;
+                
+                // Animate particles
+                vec3 pos = position;
+                pos.y += sin(time * 0.2 + position.x * 0.05) * 2.0;
+                pos.x += cos(time * 0.2 + position.z * 0.05) * 2.0;
+                
+                vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+                gl_PointSize = size * (300.0 / -mvPosition.z);
+                gl_Position = projectionMatrix * mvPosition;
+            }
+          `,
+          fragmentShader: `
+            uniform vec3 color1;
+            uniform vec3 color2;
+            uniform float time;
+            varying vec3 vPosition;
+            
+            void main() {
+                // Create circular particles
+                vec2 center = gl_PointCoord - vec2(0.5);
+                float dist = length(center);
+                
+                if (dist > 0.5) discard;
+                
+                // Mix colors based on position and time
+                float colorMix = sin(time * 0.3 + vPosition.x * 0.01 + vPosition.y * 0.01) * 0.5 + 0.5;
+                vec3 color = mix(color1, color2, colorMix);
+                
+                // Fade intensity at edges
+                float intensity = 1.0 - dist * 2.0;
+                gl_FragColor = vec4(color, pow(intensity, 1.5));
+            }
+          `,
+          transparent: true,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
+        });
+
+        const particleSystem = new THREE.Points(particles, particleMaterial);
+        scene.add(particleSystem);
+
+        // Position camera
+        camera.position.z = 150;
+
+        // Create grid for background
+        const gridHelper = new THREE.GridHelper(200, 20, 0x4361ee, 0x4361ee);
+        gridHelper.material.transparent = true;
+        gridHelper.material.opacity = 0.15;
+        gridHelper.position.y = -50;
+        scene.add(gridHelper);
+
+        // Add ambient light
+        const ambientLight = new THREE.AmbientLight(0x4361ee, 0.5);
+        scene.add(ambientLight);
+
+        // Animation loop
+        const clock = new THREE.Clock();
+        let frameId;
+
+        const animate = () => {
+          frameId = requestAnimationFrame(animate);
+          const time = clock.getElapsedTime();
+          particleMaterial.uniforms.time.value = time;
+
+          // Rotate particle system slowly
+          particleSystem.rotation.y = time * 0.05;
+          particleSystem.rotation.x = time * 0.03;
+
+          // Move camera slightly
+          camera.position.y = Math.sin(time * 0.2) * 5;
+          camera.lookAt(scene.position);
+
+          renderer.render(scene, camera);
+        };
+
+        animate();
+
+        // Handle window resize
+        const handleResize = () => {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(window.innerWidth, window.innerHeight);
+        };
+
+        window.addEventListener("resize", handleResize);
+
+        // Create grid background
+        const createGridBackground = () => {
+          const gridBg = document.querySelector(".grid-bg");
+          if (gridBg) {
+            const gridSvg = `
+              <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                      <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(67, 97, 238, 0.15)" stroke-width="1"/>
+                      </pattern>
+                  </defs>
+                  <rect width="100%" height="100%" fill="url(#grid)" />
+              </svg>
+            `;
+            gridBg.innerHTML = gridSvg;
+          }
+        };
+
+        createGridBackground();
+
+        // Clean up function to prevent memory leaks
+        return () => {
+          window.removeEventListener("resize", handleResize);
+          cancelAnimationFrame(frameId);
+          renderer.dispose();
+          particleMaterial.dispose();
+          particles.dispose();
+          scene.remove(particleSystem);
+          container.removeChild(renderer.domElement);
+        };
+      };
+
+      // Initialize the scene when the DOM is loaded
+      let cleanup;
+      document.addEventListener("DOMContentLoaded", () => {
+        cleanup = initThreeJS();
+
+        // Add scroll animations
+        const animateOnScroll = (entries, observer) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("animate-fade-in");
+              observer.unobserve(entry.target);
+            }
+          });
+        };
+
+        const observer = new IntersectionObserver(animateOnScroll, {
+          root: null,
+          threshold: 0.1,
+        });
+
+        document.querySelectorAll("section").forEach((section) => {
+          section.classList.add(
+            "opacity-0",
+            "transition-opacity",
+            "duration-1000"
+          );
+          observer.observe(section);
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+          anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute("href");
+            if (targetId === "#") return;
+
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+              targetElement.scrollIntoView({
+                behavior: "smooth",
+              });
+            }
+          });
+        });
+
+        // -------------
+        // MOBILE MENU FIX
+        // -------------
+        const mobileMenuButton = document.getElementById("mobile-menu-button");
+        const closeMenuButton = document.getElementById("close-menu-button");
+        const mobileMenu = document.getElementById("mobile-menu");
+        const mobileMenuOverlay = document.getElementById("mobile-menu-overlay");
+
+        function openMobileMenu() {
+          mobileMenu.classList.add("active");
+          mobileMenuOverlay.classList.add("active");
+        }
+
+        function closeMobileMenu() {
+          mobileMenu.classList.remove("active");
+          mobileMenuOverlay.classList.remove("active");
+        }
+
+        mobileMenuButton.addEventListener("click", openMobileMenu);
+        closeMenuButton.addEventListener("click", closeMobileMenu);
+        mobileMenuOverlay.addEventListener("click", closeMobileMenu);
+
+        // Close the mobile menu when clicking any link inside it
+        document.querySelectorAll("#mobile-menu a").forEach((link) => {
+          link.addEventListener("click", closeMobileMenu);
+        });
+      });
+
+      // Clean up on page unload to prevent memory leaks
+      window.addEventListener("beforeunload", () => {
+        if (cleanup) cleanup();
+      });
+    </script>
+  </body>
+</html>

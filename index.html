@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'neon-blue': '#4361ee',
+                        'neon-purple': '#7209b7', 
+                        'neon-pink': '#f72585',
+                        'neon-cyan': '#00f5d4',
+                        'dark-bg': '#0a0a1f'
+                    },
+                    fontFamily: {
+                        'orbitron': ['Orbitron', 'sans-serif'],
+                        'rajdhani': ['Rajdhani', 'sans-serif']
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'spin-slow': 'spin 8s linear infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 5px rgba(67, 97, 238, 0.6), 0 0 10px rgba(67, 97, 238, 0.4)' },
+                            '100%': { boxShadow: '0 0 20px rgba(67, 97, 238, 0.8), 0 0 30px rgba(67, 97, 238, 0.6)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        setTimeout(function() {
+            window.location.href = "/web/index.html";
+        }, 10000);
+    </script>
+</head>
+<body class="bg-dark-bg text-white font-rajdhani h-screen w-screen overflow-hidden flex justify-center items-center">
+    <div id="canvas-container" class="fixed top-0 left-0 w-full h-full -z-10"></div>
+
+    <div class="z-10 flex flex-col items-center justify-center">
+        <div class="relative animate-float">
+            <div id="portal-container" class="w-64 h-64 relative">
+                <!-- Portal rings and effects will be rendered here by Three.js -->
+            </div>
+            
+            <div class="loader-dots flex space-x-3 mt-8">
+                <div class="w-3 h-3 rounded-full bg-neon-blue animate-pulse"></div>
+                <div class="w-3 h-3 rounded-full bg-neon-purple animate-pulse delay-150"></div>
+                <div class="w-3 h-3 rounded-full bg-neon-pink animate-pulse delay-300"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function initThreeJS() {
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            // Create portal effect
+            const portalGeometry = new THREE.TorusGeometry(8, 0.5, 16, 100);
+            const portalMaterial = new THREE.MeshPhongMaterial({
+                color: 0x4361ee,
+                emissive: 0x4361ee,
+                shininess: 100
+            });
+            const portal = new THREE.Mesh(portalGeometry, portalMaterial);
+            scene.add(portal);
+
+            // Create energy field
+            const energyGeometry = new THREE.IcosahedronGeometry(6, 2);
+            const energyMaterial = new THREE.MeshPhongMaterial({
+                color: 0x7209b7,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.6
+            });
+            const energyField = new THREE.Mesh(energyGeometry, energyMaterial);
+            scene.add(energyField);
+
+            // Create floating crystals
+            const crystals = [];
+            for(let i = 0; i < 12; i++) {
+                const geometry = new THREE.OctahedronGeometry(0.8);
+                const material = new THREE.MeshPhongMaterial({
+                    color: 0xf72585,
+                    shininess: 90,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const crystal = new THREE.Mesh(geometry, material);
+                
+                const angle = (i / 12) * Math.PI * 2;
+                crystal.position.x = Math.cos(angle) * 10;
+                crystal.position.z = Math.sin(angle) * 10;
+                crystal.position.y = Math.sin(i) * 2;
+                
+                scene.add(crystal);
+                crystals.push(crystal);
+            }
+
+            // Add lights
+            const ambientLight = new THREE.AmbientLight(0x222222);
+            scene.add(ambientLight);
+
+            const light1 = new THREE.PointLight(0x4361ee, 2, 50);
+            light1.position.set(0, 10, 0);
+            scene.add(light1);
+
+            const light2 = new THREE.PointLight(0xf72585, 2, 50);
+            light2.position.set(0, -10, 0);
+            scene.add(light2);
+
+            // Position camera
+            camera.position.z = 30;
+
+            // Animation loop
+            const animate = () => {
+                requestAnimationFrame(animate);
+
+                portal.rotation.z += 0.01;
+                energyField.rotation.x += 0.005;
+                energyField.rotation.y += 0.005;
+
+                // Animate crystals
+                crystals.forEach((crystal, i) => {
+                    const time = Date.now() * 0.001;
+                    crystal.position.y = Math.sin(time + i) * 2;
+                    crystal.rotation.x += 0.02;
+                    crystal.rotation.z += 0.02;
+                });
+
+                // Pulsate portal
+                const scale = 1 + Math.sin(Date.now() * 0.002) * 0.1;
+                portal.scale.set(scale, scale, scale);
+
+                renderer.render(scene, camera);
+            };
+
+            animate();
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', initThreeJS);
+    </script>
+</body>
+</html>
