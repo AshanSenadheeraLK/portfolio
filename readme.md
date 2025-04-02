@@ -4,24 +4,25 @@ A personal portfolio website showcasing my work, skills, and experience.
 
 ## 🚀 Features
 
-- Clean and modern design
+- Clean and modern 3D design
 - Responsive layout
+- Skills section
 - Project showcase
 - Contact information
-- Skills section
 
 ## 🛠️ Technologies Used
 
 - HTML5
 - CSS3
 - JavaScript
-- Custom fonts (Tiro Tamil)
+- ThreeJS
+- Custom fonts (Noto Serif Sinhala, Tiro Tamil)
 
 ## 📦 Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/portfolio.git
+git clone https://github.com/ashansenadheeralk/portfolio.git
 ```
 
 2. Navigate to the project directory:
@@ -29,7 +30,7 @@ git clone https://github.com/yourusername/portfolio.git
 cd portfolio
 ```
 
-3. Open `index.html` in your preferred browser to view the website.
+3. Open `index.html` in your preferred browser to view the website or Open through the "Live Server" extension.
 
 ## 🖥️ Local Development
 
@@ -37,6 +38,7 @@ To work on this project locally:
 1. Make changes to the HTML, CSS, or JavaScript files
 2. Refresh your browser to see the changes
 3. Use a local development server for the best experience
+
 
 ## �� Project Structure
 portfolio/
@@ -47,13 +49,11 @@ portfolio/
 
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](link-to-issues).
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/AshanSenadheeraLK/portfolio/issues).
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Open anyone to use this project as a template. But Attribution is required if using without my written permission.
 
 ## 👤 Contact
 
-HM Ashan Janith Dilshan Senadheera - [contact@ashansenadheera.lk](contact@ashansenadheera.lk)
+# HM Ashan Janith Dilshan Senadheera - [Profile](https://github.com/AshanSenadheeraLK)
 Project Link: [https://github.com/ashansenadheeralk/portfolio](https://github.com/ashansenadheeralk/portfolio)
